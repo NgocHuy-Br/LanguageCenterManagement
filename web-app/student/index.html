@@ -13,7 +13,9 @@
         <aside class="sidebar">
             <div class="brand">Language Center</div>
             <nav>
-                <a href="#" class="active"><span class="icon">📘</span><span>Kết quả học tập</span></a>
+                <a href="#" class="active" data-section="profile"><span class="icon">👤</span><span>Thông tin cá
+                        nhân</span></a>
+                <a href="#" data-section="results"><span class="icon">📘</span><span>Kết quả học tập</span></a>
             </nav>
             <button class="logout-btn" id="logout-btn">
                 <span class="icon">↩</span><span>Đăng xuất</span>
@@ -22,13 +24,13 @@
 
         <div class="main">
             <div class="topbar">
-                <h2>Kết quả học tập của tôi</h2>
+                <h2 id="topbar-title">Thông tin cá nhân</h2>
                 <span class="user-info">Xin chào, <strong id="user-name"></strong> (Học viên)</span>
             </div>
 
             <div class="content">
-                <section class="section active">
-                    <div class="panel" style="margin-bottom:20px;">
+                <section class="section active" id="section-profile">
+                    <div class="panel">
                         <div class="panel-header">
                             <h3>Thông tin cá nhân</h3>
                         </div>
@@ -43,6 +45,9 @@
                         </div>
                     </div>
 
+                </section>
+
+                <section class="section" id="section-results">
                     <div class="panel">
                         <div class="panel-header">
                             <h3>Bảng điểm cá nhân</h3>
@@ -86,6 +91,24 @@
         document.getElementById('profile-address').textContent = studentProfile.address || '-';
         document.getElementById('profile-phone').textContent = studentProfile.phone || '-';
         document.getElementById('profile-email').textContent = studentProfile.email || '-';
+
+        const sectionTitles = {
+            profile: 'Thông tin cá nhân',
+            results: 'Kết quả học tập của tôi'
+        };
+
+        document.querySelectorAll('.sidebar nav a').forEach(link => {
+            link.addEventListener('click', function (e) {
+                e.preventDefault();
+                const sec = this.dataset.section;
+                if (!sec) return;
+                document.querySelectorAll('.sidebar nav a').forEach(a => a.classList.remove('active'));
+                this.classList.add('active');
+                document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
+                document.getElementById('section-' + sec).classList.add('active');
+                document.getElementById('topbar-title').textContent = sectionTitles[sec];
+            });
+        });
 
         document.getElementById('logout-btn').addEventListener('click', function () {
             clearAuth();

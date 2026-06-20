@@ -15,7 +15,10 @@
         <aside class="sidebar">
             <div class="brand">Language Center</div>
             <nav>
-                <a href="#" class="active" data-section="classes">
+                <a href="#" class="active" data-section="profile">
+                    <span class="icon">&#128100;</span><span>Thông tin cá nhân</span>
+                </a>
+                <a href="#" data-section="classes">
                     <span class="icon">&#127979;</span><span>Lớp của tôi</span>
                 </a>
                 <a href="#" data-section="scores">
@@ -30,29 +33,31 @@
         <!-- MAIN -->
         <div class="main">
             <div class="topbar">
-                <h2 id="topbar-title">Lớp phụ trách</h2>
+                <h2 id="topbar-title">Thông tin cá nhân</h2>
                 <span class="user-info">Xin chào, <strong id="user-name"></strong> (Giáo viên)</span>
             </div>
 
             <div class="content">
 
-                <div class="panel" style="margin-bottom:20px;">
-                    <div class="panel-header">
-                        <h3>Thông tin cá nhân</h3>
+                <section class="section active" id="section-profile">
+                    <div class="panel">
+                        <div class="panel-header">
+                            <h3>Thông tin cá nhân</h3>
+                        </div>
+                        <div
+                            style="padding:16px 24px; display:grid; grid-template-columns:repeat(auto-fit, minmax(220px, 1fr)); gap:10px 20px; font-size:.92rem;">
+                            <div><strong>Mã số giáo viên:</strong> <span id="profile-teacherId">-</span></div>
+                            <div><strong>Họ tên:</strong> <span id="profile-name">-</span></div>
+                            <div><strong>Ngày sinh:</strong> <span id="profile-birthDate">-</span></div>
+                            <div><strong>Địa chỉ:</strong> <span id="profile-address">-</span></div>
+                            <div><strong>Số điện thoại:</strong> <span id="profile-phone">-</span></div>
+                            <div><strong>Email:</strong> <span id="profile-email">-</span></div>
+                        </div>
                     </div>
-                    <div
-                        style="padding:16px 24px; display:grid; grid-template-columns:repeat(auto-fit, minmax(220px, 1fr)); gap:10px 20px; font-size:.92rem;">
-                        <div><strong>Mã số giáo viên:</strong> <span id="profile-teacherId">-</span></div>
-                        <div><strong>Họ tên:</strong> <span id="profile-name">-</span></div>
-                        <div><strong>Ngày sinh:</strong> <span id="profile-birthDate">-</span></div>
-                        <div><strong>Địa chỉ:</strong> <span id="profile-address">-</span></div>
-                        <div><strong>Số điện thoại:</strong> <span id="profile-phone">-</span></div>
-                        <div><strong>Email:</strong> <span id="profile-email">-</span></div>
-                    </div>
-                </div>
+                </section>
 
                 <!-- ===== SECTION: CLASSES ===== -->
-                <section class="section active" id="section-classes">
+                <section class="section" id="section-classes">
                     <div class="panel">
                         <div class="panel-header">
                             <h3>Danh sách lớp học</h3>
@@ -103,6 +108,7 @@
                                 <thead>
                                     <tr>
                                         <th>#</th>
+                                        <th>Mã số học viên</th>
                                         <th>Học viên</th>
                                         <th>Điểm</th>
                                         <th>Nhận xét</th>
@@ -111,7 +117,7 @@
                                 </thead>
                                 <tbody id="scores-tbody">
                                     <tr>
-                                        <td colspan="5" class="empty-state">Chọn lớp để xem danh sách.</td>
+                                        <td colspan="6" class="empty-state">Chọn lớp để xem danh sách.</td>
                                     </tr>
                                 </tbody>
                             </table>
@@ -172,6 +178,7 @@
 
         // === NAVIGATION ===
         const sectionTitles = {
+            profile: 'Thông tin cá nhân',
             classes: 'Lớp phụ trách',
             scores: 'Nhập / sửa điểm'
         };
@@ -285,7 +292,7 @@
             document.getElementById('students-score-panel').style.display = 'block';
 
             const tbody = document.getElementById('scores-tbody');
-            tbody.innerHTML = '<tr><td colspan="5" class="empty-state">Đang tải...</td></tr>';
+            tbody.innerHTML = '<tr><td colspan="6" class="empty-state">Đang tải...</td></tr>';
 
             // Lay ca 2 danh sach song song
             const [csArr, resultsArr] = await Promise.all([
@@ -311,7 +318,7 @@
         function renderScores(className) {
             const tbody = document.getElementById('scores-tbody');
             if (!currentClassStudents.length) {
-                tbody.innerHTML = '<tr><td colspan="5" class="empty-state">Lớp này chưa có học viên nào.</td></tr>';
+                tbody.innerHTML = '<tr><td colspan="6" class="empty-state">Lớp này chưa có học viên nào.</td></tr>';
                 return;
             }
             tbody.innerHTML = currentClassStudents.map((cs, i) => {
@@ -326,6 +333,7 @@
                 return `
     <tr>
       <td>${i + 1}</td>
+            <td>${esc(student.studentId || '-')}</td>
       <td>${esc(student.name || '-')}</td>
       <td>${scoreDisplay}</td>
       <td>${comment}</td>
