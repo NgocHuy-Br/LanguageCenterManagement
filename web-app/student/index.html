@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="vi">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Học viên - Language Center</title>
+    <link rel="stylesheet" href="../css/style.css">
+</head>
+
+<body>
+    <div class="layout">
+        <aside class="sidebar">
+            <div class="brand">Language Center</div>
+            <nav>
+                <a href="#" class="active"><span class="icon">📘</span><span>Kết quả học tập</span></a>
+            </nav>
+            <button class="logout-btn" id="logout-btn">
+                <span class="icon">↩</span><span>Đăng xuất</span>
+            </button>
+        </aside>
+
+        <div class="main">
+            <div class="topbar">
+                <h2>Kết quả học tập của tôi</h2>
+                <span class="user-info">Xin chào, <strong id="user-name"></strong> (Học viên)</span>
+            </div>
+
+            <div class="content">
+                <section class="section active">
+                    <div class="panel" style="margin-bottom:20px;">
+                        <div class="panel-header">
+                            <h3>Thông tin cá nhân</h3>
+                        </div>
+                        <div
+                            style="padding:16px 24px; display:grid; grid-template-columns:repeat(auto-fit, minmax(220px, 1fr)); gap:10px 20px; font-size:.92rem;">
+                            <div><strong>Mã số học viên:</strong> <span id="profile-studentId">-</span></div>
+                            <div><strong>Họ tên:</strong> <span id="profile-name">-</span></div>
+                            <div><strong>Ngày sinh:</strong> <span id="profile-birthDate">-</span></div>
+                            <div><strong>Địa chỉ:</strong> <span id="profile-address">-</span></div>
+                            <div><strong>Số điện thoại:</strong> <span id="profile-phone">-</span></div>
+                            <div><strong>Email:</strong> <span id="profile-email">-</span></div>
+                        </div>
+                    </div>
+
+                    <div class="panel">
+                        <div class="panel-header">
+                            <h3>Bảng điểm cá nhân</h3>
+                            <button class="btn btn-secondary btn-sm" id="refresh-results">Tải lại</button>
+                        </div>
+                        <div class="table-wrap">
+                            <table>
+                                <thead>
+                                    <tr>
+                                        <th>#</th>
+                                        <th>Lớp học</th>
+                                        <th>Điểm</th>
+                                        <th>Nhận xét</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="student-results-body">
+                                    <tr>
+                                        <td colspan="4" class="empty-state">Đang tải...</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </section>
+            </div>
+        </div>
+    </div>
+
+    <div id="toast-container"></div>
+    <script src="../js/api.js"></script>
+    <script>
+        if (!requireAuth('STUDENT')) { }
+
+        const profile = getProfile();
+        document.getElementById('user-name').textContent = getUser();
+
+        const studentProfile = profile.student || {};
+        document.getElementById('profile-studentId').textContent = studentProfile.studentId || '-';
+        document.getElementById('profile-name').textContent = studentProfile.name || '-';
+        document.getElementById('profile-birthDate').textContent = studentProfile.birthDate || '-';
+        document.getElementById('profile-address').textContent = studentProfile.address || '-';
+        document.getElementById('profile-phone').textContent = studentProfile.phone || '-';
+        document.getElementById('profile-email').textContent = studentProfile.email || '-';
+
+        document.getElementById('logout-btn').addEventListener('click', function () {
+            clearAuth();
+            window.location.href = '../index.html';
+        });
+
+        document.getElementById('refresh-results').addEventListener('click', loadMyResults);
+
+        async function loadMyResults() {
+            const tbody = document.getElementById('student-results-body');
+            tbody.innerHTML = '<tr><td colspan="4" class="empty-state">Đang tải...</td></tr>';
+
+            const results = await getStudentResults(profile.studentId);
+
+            if (!results.length) {
+                tbody.innerHTML = '<tr><td colspan="4" class="empty-state">Bạn chưa có kết quả học tập nào.</td></tr>';
+                return;
+            }
+
+            tbody.innerHTML = results.map((item, index) => {
+                const classroom = item.classStudent && item.classStudent.classroom ? item.classStudent.classroom.name : '-';
+                const score = item.score == null ? 'Chưa có' : item.score;
+                const comment = item.comment || '-';
+                return `
+                    <tr>
+                        <td>${index + 1}</td>
+                        <td>${escapeHtml(classroom)}</td>
+                        <td>${escapeHtml(score)}</td>
+                        <td>${escapeHtml(comment)}</td>
+                    </tr>`;
+            }).join('');
+        }
+
+        function escapeHtml(value) {
+            return String(value)
+                .replace(/&/g, '&amp;')
+                .replace(/</g, '&lt;')
+                .replace(/>/g, '&gt;')
+                .replace(/"/g, '&quot;');
+        }
+
+        loadMyResults();
+    </script>
+</body>
+
+</html>

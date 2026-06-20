@@ -70,6 +70,14 @@ public class ClassStudentService {
 
     }
 
+    // lấy danh sách học viên theo lớp
+
+    public List<ClassStudent> getByClassroomId(Long classroomId) {
+
+        return classStudentRepository.findByClassroomId(classroomId);
+
+    }
+
     // xóa học viên khỏi lớp
 
     public boolean delete(Long id) {

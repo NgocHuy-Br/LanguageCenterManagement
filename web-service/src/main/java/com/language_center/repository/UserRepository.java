@@ -9,4 +9,10 @@ public interface UserRepository
 
     User findByUsername(String username);
 
+    User findByUsernameIgnoreCase(String username);
+
+    User findByTeacherId(Long teacherId);
+
+    User findByStudentId(Long studentId);
+
 }

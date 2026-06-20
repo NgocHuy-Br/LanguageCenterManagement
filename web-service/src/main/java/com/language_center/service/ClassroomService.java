@@ -35,20 +35,30 @@ public class ClassroomService {
 
     }
 
+    public List<Classroom> getByTeacherId(Long teacherId) {
+
+        return classroomRepository.findByTeacherId(teacherId);
+
+    }
+
     // Thêm lớp
 
     public Classroom create(
             Classroom classroom,
             Long teacherId) {
 
-        Teacher teacher = teacherRepository
-                .findById(teacherId)
-                .orElse(null);
+        Teacher teacher = null;
 
-        if (teacher == null) {
+        if (teacherId != null) {
+            teacher = teacherRepository
+                    .findById(teacherId)
+                    .orElse(null);
 
-            return null;
+            if (teacher == null) {
 
+                return null;
+
+            }
         }
 
         classroom.setTeacher(teacher);
@@ -74,14 +84,18 @@ public class ClassroomService {
 
         }
 
-        Teacher teacher = teacherRepository
-                .findById(teacherId)
-                .orElse(null);
+        Teacher teacher = null;
 
-        if (teacher == null) {
+        if (teacherId != null) {
+            teacher = teacherRepository
+                    .findById(teacherId)
+                    .orElse(null);
 
-            return null;
+            if (teacher == null) {
 
+                return null;
+
+            }
         }
 
         oldClass.setName(

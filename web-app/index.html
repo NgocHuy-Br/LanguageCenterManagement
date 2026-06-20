@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="vi">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Language Center - Đăng nhập</title>
+    <link rel="stylesheet" href="css/style.css">
+    <style>
+        .auth-card h1 {
+            margin-bottom: 4px;
+        }
+
+        .spinner {
+            display: inline-block;
+            width: 16px;
+            height: 16px;
+            border: 2px solid rgba(255, 255, 255, .4);
+            border-top-color: #fff;
+            border-radius: 50%;
+            animation: spin .7s linear infinite;
+            vertical-align: middle;
+        }
+
+        @keyframes spin {
+            to {
+                transform: rotate(360deg);
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="auth-wrap">
+        <div class="auth-card">
+            <h1>Language Center</h1>
+            <p class="subtitle">Hệ thống quản lý trung tâm ngoại ngữ</p>
+
+            <form id="login-form" novalidate>
+                <div class="form-group">
+                    <label for="username">Tên đăng nhập</label>
+                    <input type="text" id="username" autocomplete="username" required>
+                </div>
+                <div class="form-group">
+                    <label for="password">Mật khẩu</label>
+                    <input type="password" id="password" autocomplete="current-password" required>
+                </div>
+
+                <div class="alert alert-danger" id="login-error">
+                    Sai tên đăng nhập hoặc mật khẩu. Vui lòng thử lại.
+                </div>
+
+                <button type="submit" class="btn btn-primary" style="width:100%; justify-content:center;"
+                    id="login-btn">
+                    Đăng nhập
+                </button>
+            </form>
+        </div>
+    </div>
+
+    <div id="toast-container"></div>
+    <script src="js/api.js"></script>
+    <script>
+        (function () {
+            const token = sessionStorage.getItem('auth_token');
+            const role = sessionStorage.getItem('auth_role');
+            if (token && role === 'ADMIN') window.location.href = 'admin/index.html';
+            if (token && role === 'TEACHER') window.location.href = 'teacher/index.html';
+            if (token && role === 'STUDENT') window.location.href = 'student/index.html';
+        })();
+
+        const form = document.getElementById('login-form');
+        const errBox = document.getElementById('login-error');
+        const loginBtn = document.getElementById('login-btn');
+
+        form.addEventListener('submit', async function (e) {
+            e.preventDefault();
+            errBox.style.display = 'none';
+
+            const username = document.getElementById('username').value.trim();
+            const password = document.getElementById('password').value;
+
+            if (!username || !password) {
+                errBox.textContent = 'Vui lòng nhập đầy đủ tên đăng nhập và mật khẩu.';
+                errBox.style.display = 'block';
+                return;
+            }
+
+            loginBtn.disabled = true;
+            loginBtn.innerHTML = '<span class="spinner"></span> Đang kiểm tra...';
+
+            try {
+                const result = await login(username, password);
+
+                if (!result) {
+                    errBox.textContent = 'Sai tên đăng nhập hoặc mật khẩu.';
+                    errBox.style.display = 'block';
+                    loginBtn.disabled = false;
+                    loginBtn.textContent = 'Đăng nhập';
+                    return;
+                }
+
+                saveAuth(username, password, result.role, result.profile);
+
+                if (result.role === 'ADMIN') window.location.href = 'admin/index.html';
+                if (result.role === 'TEACHER') window.location.href = 'teacher/index.html';
+                if (result.role === 'STUDENT') window.location.href = 'student/index.html';
+            } catch (err) {
+                errBox.textContent = 'Không thể kết nối đến server. Vui lòng kiểm tra webservice.';
+                errBox.style.display = 'block';
+                loginBtn.disabled = false;
+                loginBtn.textContent = 'Đăng nhập';
+            }
+        });
+    </script>
+</body>
+
+</html>

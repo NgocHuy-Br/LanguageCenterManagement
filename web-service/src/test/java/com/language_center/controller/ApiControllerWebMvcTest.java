@@ -23,6 +23,7 @@ import com.language_center.service.ClassroomService;
 import com.language_center.service.ResultService;
 import com.language_center.service.StudentService;
 import com.language_center.service.TeacherService;
+import com.language_center.service.UserService;
 import java.util.List;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -40,7 +41,8 @@ import org.springframework.test.web.servlet.MockMvc;
         TeacherController.class,
         ClassroomController.class,
         ClassStudentController.class,
-        ResultController.class
+        ResultController.class,
+        TeacherClassController.class
 })
 @Import(SecurityConfig.class)
 @AutoConfigureMockMvc(addFilters = true)
@@ -67,6 +69,9 @@ class ApiControllerWebMvcTest {
     @MockitoBean
     private ResultService resultService;
 
+    @MockitoBean
+    private UserService userService;
+
     @Test
     void login_shouldPermitAllWithoutAuth() throws Exception {
         mockMvc.perform(post("/api/login"))
@@ -80,7 +85,7 @@ class ApiControllerWebMvcTest {
     }
 
     @Test
-    @WithMockUser(roles = "TEACHER")
+    @WithMockUser(username = "teacher", roles = "TEACHER")
     void adminEndpoint_shouldRejectWrongRole() throws Exception {
         mockMvc.perform(get("/api/admin/students"))
                 .andExpect(status().isForbidden());
@@ -286,12 +291,13 @@ class ApiControllerWebMvcTest {
     }
 
     @Test
-    @WithMockUser(roles = "TEACHER")
+    @WithMockUser(username = "teacher", roles = "TEACHER")
     void resultCreate_shouldReturn200() throws Exception {
         Result result = new Result();
         result.setScore(8.5);
         result.setComment("Good");
-        when(resultService.create(eq(1L), any(Result.class))).thenReturn(result);
+        when(userService.getTeacherIdByUsername("teacher")).thenReturn(1L);
+        when(resultService.createForTeacher(eq(1L), eq(1L), any(Result.class))).thenReturn(result);
 
         mockMvc.perform(post("/api/teacher/results")
                 .param("classStudentId", "1")
@@ -314,10 +320,11 @@ class ApiControllerWebMvcTest {
     }
 
     @Test
-    @WithMockUser(roles = "STUDENT")
+    @WithMockUser(username = "student", roles = "STUDENT")
     void resultGetByStudent_shouldReturn200() throws Exception {
         Result result = new Result();
         result.setScore(7.5);
+        when(userService.getStudentIdByUsername("student")).thenReturn(1L);
         when(resultService.getByStudent(1L)).thenReturn(List.of(result));
 
         mockMvc.perform(get("/api/student/results/1"))
@@ -326,12 +333,13 @@ class ApiControllerWebMvcTest {
     }
 
     @Test
-    @WithMockUser(roles = "TEACHER")
+    @WithMockUser(username = "teacher", roles = "TEACHER")
     void resultUpdate_shouldReturn200() throws Exception {
         Result result = new Result();
         result.setScore(9.5);
         result.setComment("Excellent");
-        when(resultService.update(eq(10L), any(Result.class))).thenReturn(result);
+        when(userService.getTeacherIdByUsername("teacher")).thenReturn(1L);
+        when(resultService.updateForTeacher(eq(1L), eq(10L), any(Result.class))).thenReturn(result);
 
         mockMvc.perform(put("/api/teacher/results/10")
                 .contentType(MediaType.APPLICATION_JSON)
@@ -341,12 +349,37 @@ class ApiControllerWebMvcTest {
     }
 
     @Test
-    @WithMockUser(roles = "TEACHER")
+    @WithMockUser(username = "teacher", roles = "TEACHER")
     void resultDeleteNotFound_shouldReturn404() throws Exception {
-        when(resultService.delete(anyLong())).thenReturn(false);
+        when(userService.getTeacherIdByUsername("teacher")).thenReturn(1L);
+        when(resultService.deleteForTeacher(eq(1L), anyLong())).thenReturn(false);
 
         mockMvc.perform(delete("/api/teacher/results/100"))
                 .andExpect(status().isNotFound())
                 .andExpect(jsonPath("$.status").value(404));
+    }
+
+    @Test
+    @WithMockUser(username = "teacher", roles = "TEACHER")
+    void teacherClassGetAll_shouldReturnOnlyOwnClasses() throws Exception {
+        Classroom classroom = new Classroom();
+        classroom.setName("Lop GV A");
+        when(userService.getTeacherIdByUsername("teacher")).thenReturn(5L);
+        when(classroomService.getByTeacherId(5L)).thenReturn(List.of(classroom));
+
+        mockMvc.perform(get("/api/teacher/classes"))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.status").value(200))
+                .andExpect(jsonPath("$.data[0].name").value("Lop GV A"));
+    }
+
+    @Test
+    @WithMockUser(username = "student", roles = "STUDENT")
+    void resultGetByStudent_shouldRejectOtherStudentId() throws Exception {
+        when(userService.getStudentIdByUsername("student")).thenReturn(1L);
+
+        mockMvc.perform(get("/api/student/results/2"))
+                .andExpect(status().isForbidden())
+                .andExpect(jsonPath("$.status").value(403));
     }
 }

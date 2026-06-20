@@ -12,170 +12,170 @@ import com.language_center.service.ClassroomService;
 @CrossOrigin("*")
 public class ClassroomController {
 
-    private final ClassroomService service;
+        private final ClassroomService service;
 
-    public ClassroomController(
-            ClassroomService service) {
+        public ClassroomController(
+                        ClassroomService service) {
 
-        this.service = service;
-
-    }
-
-    /*
-     * Lấy danh sách lớp
-     * 
-     * GET:
-     * /api/admin/classes
-     */
-
-    @GetMapping
-    public ResponseEntity<?> getAll() {
-
-        return ResponseEntity.ok(
-
-                new ApiResponse<>(
-                        200,
-                        "Lấy danh sách lớp thành công",
-                        service.getAll())
-
-        );
-
-    }
-
-    /*
-     * Tạo lớp
-     * 
-     * POST:
-     * /api/admin/classes?teacherId=1
-     * 
-     * Body:
-     * 
-     * {
-     * "name":"IELTS01"
-     * }
-     * 
-     */
-
-    @PostMapping
-    public ResponseEntity<?> create(
-            @RequestBody Classroom classroom,
-            @RequestParam Long teacherId) {
-
-        Classroom result = service.create(
-                classroom,
-                teacherId);
-
-        if (result == null) {
-
-            return ResponseEntity
-                    .status(404)
-                    .body(
-
-                            new ApiResponse<>(
-                                    404,
-                                    "Không tìm thấy giáo viên",
-                                    null)
-
-                    );
+                this.service = service;
 
         }
 
-        return ResponseEntity.ok(
+        /*
+         * Lấy danh sách lớp
+         * 
+         * GET:
+         * /api/admin/classes
+         */
 
-                new ApiResponse<>(
-                        200,
-                        "Tạo lớp thành công",
-                        result)
+        @GetMapping
+        public ResponseEntity<?> getAll() {
 
-        );
+                return ResponseEntity.ok(
 
-    }
+                                new ApiResponse<>(
+                                                200,
+                                                "Lấy danh sách lớp thành công",
+                                                service.getAll())
 
-    /*
-     * Cập nhật lớp
-     * 
-     * PUT:
-     * 
-     * /api/admin/classes/1?teacherId=2
-     * 
-     */
-
-    @PutMapping("/{id}")
-    public ResponseEntity<?> update(
-            @PathVariable Long id,
-            @RequestBody Classroom classroom,
-            @RequestParam Long teacherId) {
-
-        Classroom result = service.update(
-                id,
-                classroom,
-                teacherId);
-
-        if (result == null) {
-
-            return ResponseEntity
-                    .status(404)
-                    .body(
-
-                            new ApiResponse<>(
-                                    404,
-                                    "Không tìm thấy lớp hoặc giáo viên",
-                                    null)
-
-                    );
+                );
 
         }
 
-        return ResponseEntity.ok(
+        /*
+         * Tạo lớp
+         * 
+         * POST:
+         * /api/admin/classes?teacherId=1
+         * 
+         * Body:
+         * 
+         * {
+         * "name":"IELTS01"
+         * }
+         * 
+         */
 
-                new ApiResponse<>(
-                        200,
-                        "Cập nhật lớp thành công",
-                        result)
+        @PostMapping
+        public ResponseEntity<?> create(
+                        @RequestBody Classroom classroom,
+                        @RequestParam(required = false) Long teacherId) {
 
-        );
+                Classroom result = service.create(
+                                classroom,
+                                teacherId);
 
-    }
+                if (result == null) {
 
-    /*
-     * Xóa lớp
-     * 
-     * DELETE:
-     * 
-     * /api/admin/classes/{id}
-     * 
-     */
+                        return ResponseEntity
+                                        .status(404)
+                                        .body(
 
-    @DeleteMapping("/{id}")
-    public ResponseEntity<?> delete(
-            @PathVariable Long id) {
+                                                        new ApiResponse<>(
+                                                                        404,
+                                                                        "Không tìm thấy giáo viên",
+                                                                        null)
 
-        boolean result = service.delete(id);
+                                        );
 
-        if (!result) {
+                }
 
-            return ResponseEntity
-                    .status(404)
-                    .body(
+                return ResponseEntity.ok(
 
-                            new ApiResponse<>(
-                                    404,
-                                    "Không tìm thấy lớp",
-                                    null)
+                                new ApiResponse<>(
+                                                200,
+                                                "Tạo lớp thành công",
+                                                result)
 
-                    );
+                );
 
         }
 
-        return ResponseEntity.ok(
+        /*
+         * Cập nhật lớp
+         * 
+         * PUT:
+         * 
+         * /api/admin/classes/1?teacherId=2
+         * 
+         */
 
-                new ApiResponse<>(
-                        200,
-                        "Xóa lớp thành công",
-                        null)
+        @PutMapping("/{id}")
+        public ResponseEntity<?> update(
+                        @PathVariable Long id,
+                        @RequestBody Classroom classroom,
+                        @RequestParam(required = false) Long teacherId) {
 
-        );
+                Classroom result = service.update(
+                                id,
+                                classroom,
+                                teacherId);
 
-    }
+                if (result == null) {
+
+                        return ResponseEntity
+                                        .status(404)
+                                        .body(
+
+                                                        new ApiResponse<>(
+                                                                        404,
+                                                                        "Không tìm thấy lớp hoặc giáo viên",
+                                                                        null)
+
+                                        );
+
+                }
+
+                return ResponseEntity.ok(
+
+                                new ApiResponse<>(
+                                                200,
+                                                "Cập nhật lớp thành công",
+                                                result)
+
+                );
+
+        }
+
+        /*
+         * Xóa lớp
+         * 
+         * DELETE:
+         * 
+         * /api/admin/classes/{id}
+         * 
+         */
+
+        @DeleteMapping("/{id}")
+        public ResponseEntity<?> delete(
+                        @PathVariable Long id) {
+
+                boolean result = service.delete(id);
+
+                if (!result) {
+
+                        return ResponseEntity
+                                        .status(404)
+                                        .body(
+
+                                                        new ApiResponse<>(
+                                                                        404,
+                                                                        "Không tìm thấy lớp",
+                                                                        null)
+
+                                        );
+
+                }
+
+                return ResponseEntity.ok(
+
+                                new ApiResponse<>(
+                                                200,
+                                                "Xóa lớp thành công",
+                                                null)
+
+                );
+
+        }
 
 }

@@ -16,6 +16,12 @@ public class User {
 
     private String role;
 
+    @Column(name = "teacher_id")
+    private Long teacherId;
+
+    @Column(name = "student_id")
+    private Long studentId;
+
     public Long getId() {
         return id;
     }
@@ -42,6 +48,22 @@ public class User {
 
     public void setRole(String role) {
         this.role = role;
+    }
+
+    public Long getTeacherId() {
+        return teacherId;
+    }
+
+    public void setTeacherId(Long teacherId) {
+        this.teacherId = teacherId;
+    }
+
+    public Long getStudentId() {
+        return studentId;
+    }
+
+    public void setStudentId(Long studentId) {
+        this.studentId = studentId;
     }
 
 }

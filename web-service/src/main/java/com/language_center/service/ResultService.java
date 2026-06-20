@@ -49,6 +49,30 @@ public class ResultService {
 
     }
 
+    public Result createForTeacher(
+            Long teacherId,
+            Long classStudentId,
+            Result result) {
+
+        ClassStudent classStudent = classStudentRepository
+                .findById(classStudentId)
+                .orElse(null);
+
+        if (classStudent == null
+                || classStudent.getClassroom() == null
+                || classStudent.getClassroom().getTeacher() == null
+                || !teacherId.equals(classStudent.getClassroom().getTeacher().getId())) {
+
+            return null;
+
+        }
+
+        result.setClassStudent(classStudent);
+
+        return resultRepository.save(result);
+
+    }
+
     // lấy toàn bộ kết quả
 
     public List<Result> getAll() {
@@ -62,15 +86,13 @@ public class ResultService {
     public List<Result> getByStudent(
             Long studentId) {
 
-        return resultRepository
-                .findAll()
-                .stream()
-                .filter(
-                        r -> r.getClassStudent()
-                                .getStudent()
-                                .getId()
-                                .equals(studentId))
-                .toList();
+        return resultRepository.findByClassStudentStudentId(studentId);
+
+    }
+
+    public List<Result> getByStudentUsername(Long studentId) {
+
+        return resultRepository.findByClassStudentStudentId(studentId);
 
     }
 
@@ -100,6 +122,32 @@ public class ResultService {
 
     }
 
+    public Result updateForTeacher(
+            Long teacherId,
+            Long id,
+            Result result) {
+
+        Result old = resultRepository
+                .findById(id)
+                .orElse(null);
+
+        if (old == null
+                || old.getClassStudent() == null
+                || old.getClassStudent().getClassroom() == null
+                || old.getClassStudent().getClassroom().getTeacher() == null
+                || !teacherId.equals(old.getClassStudent().getClassroom().getTeacher().getId())) {
+
+            return null;
+
+        }
+
+        old.setScore(result.getScore());
+        old.setComment(result.getComment());
+
+        return resultRepository.save(old);
+
+    }
+
     // xóa kết quả
 
     public boolean delete(Long id) {
@@ -113,6 +161,40 @@ public class ResultService {
         resultRepository.deleteById(id);
 
         return true;
+
+    }
+
+    public boolean deleteForTeacher(Long teacherId, Long id) {
+
+        Result result = resultRepository.findById(id).orElse(null);
+
+        if (result == null
+                || result.getClassStudent() == null
+                || result.getClassStudent().getClassroom() == null
+                || result.getClassStudent().getClassroom().getTeacher() == null
+                || !teacherId.equals(result.getClassStudent().getClassroom().getTeacher().getId())) {
+
+            return false;
+
+        }
+
+        resultRepository.deleteById(id);
+
+        return true;
+
+    }
+
+    // lấy kết quả theo lớp (dành cho giáo viên)
+
+    public List<Result> getByClassroom(Long classroomId) {
+
+        return resultRepository.findByClassStudentClassroomId(classroomId);
+
+    }
+
+    public List<Result> getByClassroomForTeacher(Long teacherId, Long classroomId) {
+
+        return resultRepository.findByClassStudentClassroomTeacherIdAndClassStudentClassroomId(teacherId, classroomId);
 
     }
 

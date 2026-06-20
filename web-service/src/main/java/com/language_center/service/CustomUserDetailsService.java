@@ -24,7 +24,13 @@ public class CustomUserDetailsService
             String username)
             throws UsernameNotFoundException {
 
-        User user = repository.findByUsername(username);
+        String normalizedUsername = username == null ? "" : username.trim();
+
+        User user = repository.findByUsernameIgnoreCase(normalizedUsername);
+
+        if (user == null) {
+            user = repository.findByUsername(normalizedUsername);
+        }
 
         if (user == null) {
 
@@ -33,11 +39,31 @@ public class CustomUserDetailsService
 
         }
 
+        String role = normalizeRole(user.getRole());
+
+        String password = user.getPassword() == null ? "" : user.getPassword();
+
         return org.springframework.security.core.userdetails.User
                 .withUsername(user.getUsername())
-                .password(user.getPassword())
-                .roles(user.getRole())
+                .password(password)
+                .roles(role)
                 .build();
+
+    }
+
+    private String normalizeRole(String role) {
+
+        if (role == null) {
+            return "ADMIN";
+        }
+
+        String normalizedRole = role.trim().toUpperCase();
+
+        if (normalizedRole.startsWith("ROLE_")) {
+            normalizedRole = normalizedRole.substring(5);
+        }
+
+        return normalizedRole;
 
     }
 

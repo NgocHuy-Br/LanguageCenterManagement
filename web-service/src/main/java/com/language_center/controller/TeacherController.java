@@ -12,105 +12,115 @@ import com.language_center.service.TeacherService;
 @CrossOrigin("*")
 public class TeacherController {
 
-    private final TeacherService teacherService;
+        private final TeacherService teacherService;
 
-    public TeacherController(
-            TeacherService teacherService) {
+        public TeacherController(
+                        TeacherService teacherService) {
 
-        this.teacherService = teacherService;
-
-    }
-
-    // GET ALL
-
-    @GetMapping
-    public ResponseEntity<?> getAll() {
-        return ResponseEntity.ok(
-                new ApiResponse<>(
-                        200,
-                        "Lấy danh sách giáo viên thành công",
-                        teacherService.getAll()));
-    }
-
-    // CREATE
-    @PostMapping
-    public ResponseEntity<?> create(
-            @RequestBody Teacher teacher) {
-
-        Teacher result = teacherService.create(teacher);
-
-        return ResponseEntity.ok(
-
-                new ApiResponse<>(
-                        200,
-                        "Thêm giáo viên thành công",
-                        result));
-
-    }
-
-    // UPDATE
-    @PutMapping("/{id}")
-    public ResponseEntity<?> update(
-            @PathVariable Long id,
-            @RequestBody Teacher teacher) {
-
-        Teacher result = teacherService.update(id, teacher);
-
-        if (result == null) {
-
-            return ResponseEntity
-                    .status(404)
-                    .body(
-
-                            new ApiResponse<>(
-                                    404,
-                                    "Không tìm thấy giáo viên",
-                                    null)
-
-                    );
-
-        }
-        return ResponseEntity.ok(
-
-                new ApiResponse<>(
-                        200,
-                        "Cập nhật giáo viên thành công",
-                        result));
-
-    }
-
-    // DELETE
-
-    @DeleteMapping("/{id}")
-    public ResponseEntity<?> delete(
-            @PathVariable Long id) {
-
-        boolean result = teacherService.delete(id);
-
-        if (!result) {
-
-            return ResponseEntity
-                    .status(404)
-                    .body(
-
-                            new ApiResponse<>(
-                                    404,
-                                    "Không tìm thấy giáo viên",
-                                    null)
-
-                    );
+                this.teacherService = teacherService;
 
         }
 
-        return ResponseEntity.ok(
+        // GET ALL
 
-                new ApiResponse<>(
-                        200,
-                        "Xóa giáo viên thành công",
-                        null)
+        @GetMapping
+        public ResponseEntity<?> getAll() {
+                return ResponseEntity.ok(
+                                new ApiResponse<>(
+                                                200,
+                                                "Lấy danh sách giáo viên thành công",
+                                                teacherService.getAll()));
+        }
 
-        );
+        // CREATE
+        @PostMapping
+        public ResponseEntity<?> create(
+                        @RequestBody Teacher teacher) {
 
-    }
+                try {
+                        Teacher result = teacherService.create(teacher);
+
+                        return ResponseEntity.ok(
+
+                                        new ApiResponse<>(
+                                                        200,
+                                                        "Thêm giáo viên thành công",
+                                                        result));
+                } catch (IllegalArgumentException ex) {
+                        return ResponseEntity.badRequest()
+                                        .body(new ApiResponse<>(400, ex.getMessage(), null));
+                }
+
+        }
+
+        // UPDATE
+        @PutMapping("/{id}")
+        public ResponseEntity<?> update(
+                        @PathVariable Long id,
+                        @RequestBody Teacher teacher) {
+
+                try {
+                        Teacher result = teacherService.update(id, teacher);
+
+                        if (result == null) {
+
+                                return ResponseEntity
+                                                .status(404)
+                                                .body(
+
+                                                                new ApiResponse<>(
+                                                                                404,
+                                                                                "Không tìm thấy giáo viên",
+                                                                                null)
+
+                                                );
+
+                        }
+                        return ResponseEntity.ok(
+
+                                        new ApiResponse<>(
+                                                        200,
+                                                        "Cập nhật giáo viên thành công",
+                                                        result));
+                } catch (IllegalArgumentException ex) {
+                        return ResponseEntity.badRequest()
+                                        .body(new ApiResponse<>(400, ex.getMessage(), null));
+                }
+
+        }
+
+        // DELETE
+
+        @DeleteMapping("/{id}")
+        public ResponseEntity<?> delete(
+                        @PathVariable Long id) {
+
+                boolean result = teacherService.delete(id);
+
+                if (!result) {
+
+                        return ResponseEntity
+                                        .status(404)
+                                        .body(
+
+                                                        new ApiResponse<>(
+                                                                        404,
+                                                                        "Không tìm thấy giáo viên",
+                                                                        null)
+
+                                        );
+
+                }
+
+                return ResponseEntity.ok(
+
+                                new ApiResponse<>(
+                                                200,
+                                                "Xóa giáo viên thành công",
+                                                null)
+
+                );
+
+        }
 
 }

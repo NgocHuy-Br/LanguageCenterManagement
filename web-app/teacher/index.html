@@ -1,0 +1,441 @@
+<!DOCTYPE html>
+<html lang="vi">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Giáo viên - Language Center</title>
+    <link rel="stylesheet" href="../css/style.css">
+</head>
+
+<body>
+    <div class="layout">
+
+        <!-- SIDEBAR -->
+        <aside class="sidebar">
+            <div class="brand">Language Center</div>
+            <nav>
+                <a href="#" class="active" data-section="classes">
+                    <span class="icon">&#127979;</span><span>Lớp của tôi</span>
+                </a>
+                <a href="#" data-section="scores">
+                    <span class="icon">&#128200;</span><span>Nhập điểm</span>
+                </a>
+            </nav>
+            <button class="logout-btn" id="logout-btn">
+                <span class="icon">&#x2386;</span><span>Đăng xuất</span>
+            </button>
+        </aside>
+
+        <!-- MAIN -->
+        <div class="main">
+            <div class="topbar">
+                <h2 id="topbar-title">Lớp phụ trách</h2>
+                <span class="user-info">Xin chào, <strong id="user-name"></strong> (Giáo viên)</span>
+            </div>
+
+            <div class="content">
+
+                <div class="panel" style="margin-bottom:20px;">
+                    <div class="panel-header">
+                        <h3>Thông tin cá nhân</h3>
+                    </div>
+                    <div
+                        style="padding:16px 24px; display:grid; grid-template-columns:repeat(auto-fit, minmax(220px, 1fr)); gap:10px 20px; font-size:.92rem;">
+                        <div><strong>Mã số giáo viên:</strong> <span id="profile-teacherId">-</span></div>
+                        <div><strong>Họ tên:</strong> <span id="profile-name">-</span></div>
+                        <div><strong>Ngày sinh:</strong> <span id="profile-birthDate">-</span></div>
+                        <div><strong>Địa chỉ:</strong> <span id="profile-address">-</span></div>
+                        <div><strong>Số điện thoại:</strong> <span id="profile-phone">-</span></div>
+                        <div><strong>Email:</strong> <span id="profile-email">-</span></div>
+                    </div>
+                </div>
+
+                <!-- ===== SECTION: CLASSES ===== -->
+                <section class="section active" id="section-classes">
+                    <div class="panel">
+                        <div class="panel-header">
+                            <h3>Danh sách lớp học</h3>
+                            <span class="badge badge-blue" id="classes-count">0 lớp</span>
+                        </div>
+                        <div class="table-wrap">
+                            <table>
+                                <thead>
+                                    <tr>
+                                        <th>#</th>
+                                        <th>Tên lớp</th>
+                                        <th>Giáo viên phụ trách</th>
+                                        <th>Thao tác</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="classes-tbody">
+                                    <tr>
+                                        <td colspan="4" class="empty-state">Đang tải...</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- ===== SECTION: SCORES ===== -->
+                <section class="section" id="section-scores">
+                    <div class="panel" style="margin-bottom:20px;">
+                        <div class="panel-header">
+                            <h3>Chọn lớp để nhập điểm</h3>
+                        </div>
+                        <div style="padding: 16px 24px; display:flex; gap:12px; align-items:center; flex-wrap:wrap;">
+                            <select id="score-class-select"
+                                style="width:260px; padding:9px 12px; border-radius:6px; border:1px solid #d1d5db; font-size:.9rem;">
+                                <option value="">-- Chọn lớp --</option>
+                            </select>
+                            <button class="btn btn-primary" id="btn-load-students">Xem học viên</button>
+                        </div>
+                    </div>
+
+                    <div class="panel" id="students-score-panel" style="display:none;">
+                        <div class="panel-header">
+                            <h3 id="score-class-title">Danh sách học viên</h3>
+                            <button class="btn btn-secondary btn-sm" id="btn-refresh-scores">&#8635; Tải lại</button>
+                        </div>
+                        <div class="table-wrap">
+                            <table>
+                                <thead>
+                                    <tr>
+                                        <th>#</th>
+                                        <th>Học viên</th>
+                                        <th>Điểm</th>
+                                        <th>Nhận xét</th>
+                                        <th>Thao tác</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="scores-tbody">
+                                    <tr>
+                                        <td colspan="5" class="empty-state">Chọn lớp để xem danh sách.</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </section>
+
+            </div><!-- /content -->
+        </div><!-- /main -->
+    </div><!-- /layout -->
+
+    <!-- ===== MODAL: NHAP / SUA DIEM ===== -->
+    <div class="modal-bg" id="modal-score">
+        <div class="modal">
+            <div class="modal-header">
+                <h3 id="modal-score-title">Nhập điểm</h3>
+                <button class="modal-close" data-modal="modal-score">&times;</button>
+            </div>
+            <div class="modal-body">
+                <input type="hidden" id="score-result-id">
+                <input type="hidden" id="score-cs-id">
+                <div style="margin-bottom:12px;">
+                    <strong id="score-student-name"></strong>
+                    <span style="color:#666; font-size:.85rem;" id="score-class-label"></span>
+                </div>
+                <div class="form-group">
+                    <label>Điểm số <span style="color:red">*</span></label>
+                    <input type="number" id="score-value" min="0" max="10" step="0.1" placeholder="0 - 10">
+                </div>
+                <div class="form-group">
+                    <label>Nhận xét</label>
+                    <input type="text" id="score-comment" placeholder="Học tốt, cần cố gắng hơn...">
+                </div>
+                <div class="alert alert-danger" id="err-score" style="display:none"></div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-secondary" data-modal="modal-score">Hủy</button>
+                <button class="btn btn-primary" id="save-score-btn">Lưu điểm</button>
+            </div>
+        </div>
+    </div>
+
+    <div id="toast-container"></div>
+    <script src="../js/api.js"></script>
+    <script>
+        // === AUTH GUARD ===
+        if (!requireAuth('TEACHER')) { /* redirect handled inside */ }
+        document.getElementById('user-name').textContent = getUser();
+
+        const profile = getProfile();
+        const teacherProfile = profile.teacher || {};
+        document.getElementById('profile-teacherId').textContent = teacherProfile.teacherId || '-';
+        document.getElementById('profile-name').textContent = teacherProfile.name || '-';
+        document.getElementById('profile-birthDate').textContent = teacherProfile.birthDate || '-';
+        document.getElementById('profile-address').textContent = teacherProfile.address || '-';
+        document.getElementById('profile-phone').textContent = teacherProfile.phone || '-';
+        document.getElementById('profile-email').textContent = teacherProfile.email || '-';
+
+        // === NAVIGATION ===
+        const sectionTitles = {
+            classes: 'Lớp phụ trách',
+            scores: 'Nhập / sửa điểm'
+        };
+
+        document.querySelectorAll('.sidebar nav a').forEach(link => {
+            link.addEventListener('click', function (e) {
+                e.preventDefault();
+                const sec = this.dataset.section;
+                document.querySelectorAll('.sidebar nav a').forEach(a => a.classList.remove('active'));
+                this.classList.add('active');
+                document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
+                document.getElementById('section-' + sec).classList.add('active');
+                document.getElementById('topbar-title').textContent = sectionTitles[sec];
+                if (sec === 'scores') populateClassSelect();
+            });
+        });
+
+        document.getElementById('logout-btn').addEventListener('click', function () {
+            clearAuth();
+            window.location.href = '../index.html';
+        });
+
+        // === MODAL HELPERS ===
+        document.querySelectorAll('.modal-close, [data-modal]').forEach(btn => {
+            btn.addEventListener('click', function () {
+                const id = this.dataset.modal;
+                if (id) closeModal(id);
+            });
+        });
+        document.querySelectorAll('.modal-bg').forEach(bg => {
+            bg.addEventListener('click', function (e) {
+                if (e.target === this) closeModal(this.id);
+            });
+        });
+        function openModal(id) { document.getElementById(id).classList.add('open'); }
+        function closeModal(id) { document.getElementById(id).classList.remove('open'); }
+
+        // === STATE ===
+        let allClasses = [];
+        let currentClassStudents = [];
+        let currentClassId = null;
+
+        // =========================================================
+        // CLASSES VIEW
+        // =========================================================
+        async function loadClasses() {
+            allClasses = await getTeacherClasses();
+            renderClasses();
+            populateClassSelect();
+        }
+
+        function renderClasses() {
+            const tbody = document.getElementById('classes-tbody');
+            document.getElementById('classes-count').textContent = allClasses.length + ' lớp';
+            if (!allClasses.length) {
+                tbody.innerHTML = '<tr><td colspan="4" class="empty-state">Chưa có lớp học nào.</td></tr>';
+                return;
+            }
+            tbody.innerHTML = allClasses.map((c, i) => `
+    <tr>
+      <td>${i + 1}</td>
+      <td><strong>${esc(c.name)}</strong></td>
+            <td>${c.teacher ? esc(c.teacher.name) : '<span style="color:#aaa">Chưa phân công</span>'}</td>
+      <td>
+                <button class="btn btn-primary btn-sm" onclick="goToScores(${c.id}, '${esc(c.name)}')">Nhập điểm</button>
+      </td>
+    </tr>`).join('');
+        }
+
+        function goToScores(classId, className) {
+            // Chuyen sang section scores va chon lop nay
+            document.querySelectorAll('.sidebar nav a').forEach(a => a.classList.remove('active'));
+            document.querySelector('[data-section="scores"]').classList.add('active');
+            document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
+            document.getElementById('section-scores').classList.add('active');
+            document.getElementById('topbar-title').textContent = sectionTitles['scores'];
+
+            populateClassSelect();
+            const sel = document.getElementById('score-class-select');
+            sel.value = classId;
+            loadClassStudentScores(classId, className);
+        }
+
+        // =========================================================
+        // SCORES
+        // =========================================================
+        function populateClassSelect() {
+            const sel = document.getElementById('score-class-select');
+            const cur = sel.value;
+            sel.innerHTML = '<option value="">-- Chọn lớp --</option>' +
+                allClasses.map(c => `<option value="${c.id}">${esc(c.name)}</option>`).join('');
+            if (cur) sel.value = cur;
+        }
+
+        document.getElementById('btn-load-students').addEventListener('click', async () => {
+            const classId = document.getElementById('score-class-select').value;
+            if (!classId) { showToast('Vui lòng chọn lớp trước.', 'info'); return; }
+            const cls = allClasses.find(c => c.id == classId);
+            await loadClassStudentScores(classId, cls ? cls.name : '');
+        });
+
+        document.getElementById('btn-refresh-scores').addEventListener('click', async () => {
+            if (!currentClassId) return;
+            const cls = allClasses.find(c => c.id == currentClassId);
+            await loadClassStudentScores(currentClassId, cls ? cls.name : '');
+        });
+
+        async function loadClassStudentScores(classId, className) {
+            currentClassId = classId;
+            document.getElementById('score-class-title').textContent = 'Học viên lớp: ' + className;
+            document.getElementById('students-score-panel').style.display = 'block';
+
+            const tbody = document.getElementById('scores-tbody');
+            tbody.innerHTML = '<tr><td colspan="5" class="empty-state">Đang tải...</td></tr>';
+
+            // Lay ca 2 danh sach song song
+            const [csArr, resultsArr] = await Promise.all([
+                getTeacherClassStudents(classId),
+                getTeacherResultsByClass(classId)
+            ]);
+
+            // Tao map: classStudentId -> result
+            const resultMap = {};
+            resultsArr.forEach(r => {
+                if (r.classStudent) resultMap[r.classStudent.id] = r;
+            });
+
+            // Gan result vao tung class-student
+            currentClassStudents = csArr.map(cs => ({
+                ...cs,
+                result: resultMap[cs.id] || null
+            }));
+
+            renderScores(className);
+        }
+
+        function renderScores(className) {
+            const tbody = document.getElementById('scores-tbody');
+            if (!currentClassStudents.length) {
+                tbody.innerHTML = '<tr><td colspan="5" class="empty-state">Lớp này chưa có học viên nào.</td></tr>';
+                return;
+            }
+            tbody.innerHTML = currentClassStudents.map((cs, i) => {
+                const student = cs.student || {};
+                const result = cs.result || null; // nếu API trả về result lồng trong cs
+                // Fallback: result nằm trong cs.result
+                const hasScore = result && (result.score !== null && result.score !== undefined);
+                const scoreDisplay = hasScore ? scoreBadge(result.score) : '<span class="badge badge-blue">Chưa có</span>';
+                const comment = (result && result.comment) ? esc(result.comment) : '-';
+                const resultId = result ? result.id : null;
+
+                return `
+    <tr>
+      <td>${i + 1}</td>
+      <td>${esc(student.name || '-')}</td>
+      <td>${scoreDisplay}</td>
+      <td>${comment}</td>
+      <td>
+        ${hasScore
+                        ? `<button class="btn btn-secondary btn-sm" onclick="openEditScore(${cs.id}, ${student.id}, '${esc(student.name)}', ${result.id}, ${result.score}, '${esc(result.comment || '')}')">Sửa</button>
+             <button class="btn btn-danger btn-sm" onclick="deleteScore(${result.id})">Xóa</button>`
+                        : `<button class="btn btn-success btn-sm" onclick="openNewScore(${cs.id}, '${esc(student.name)}')">Nhập điểm</button>`
+                    }
+      </td>
+    </tr>`;
+            }).join('');
+        }
+
+        function openNewScore(csId, studentName) {
+            document.getElementById('modal-score-title').textContent = 'Nhập điểm';
+            document.getElementById('score-result-id').value = '';
+            document.getElementById('score-cs-id').value = csId;
+            document.getElementById('score-student-name').textContent = studentName;
+            document.getElementById('score-class-label').textContent = '';
+            document.getElementById('score-value').value = '';
+            document.getElementById('score-comment').value = '';
+            document.getElementById('err-score').style.display = 'none';
+            openModal('modal-score');
+        }
+
+        function openEditScore(csId, studentId, studentName, resultId, score, comment) {
+            document.getElementById('modal-score-title').textContent = 'Sửa điểm';
+            document.getElementById('score-result-id').value = resultId;
+            document.getElementById('score-cs-id').value = csId;
+            document.getElementById('score-student-name').textContent = studentName;
+            document.getElementById('score-class-label').textContent = '';
+            document.getElementById('score-value').value = score;
+            document.getElementById('score-comment').value = comment;
+            document.getElementById('err-score').style.display = 'none';
+            openModal('modal-score');
+        }
+
+        document.getElementById('save-score-btn').addEventListener('click', async () => {
+            const resultId = document.getElementById('score-result-id').value;
+            const csId = document.getElementById('score-cs-id').value;
+            const scoreVal = document.getElementById('score-value').value;
+            const comment = document.getElementById('score-comment').value.trim();
+            const err = document.getElementById('err-score');
+
+            if (scoreVal === '' || scoreVal === null) {
+                err.textContent = 'Vui lòng nhập điểm số.';
+                err.style.display = 'block';
+                return;
+            }
+            const score = parseFloat(scoreVal);
+            if (isNaN(score) || score < 0 || score > 10) {
+                err.textContent = 'Điểm phải từ 0 đến 10.';
+                err.style.display = 'block';
+                return;
+            }
+            err.style.display = 'none';
+
+            const payload = { score, comment };
+            let result;
+            if (resultId) {
+                result = await updateResult(Number(resultId), payload);
+            } else {
+                result = await createResult(Number(csId), payload);
+            }
+
+            if (!result || !result.ok) {
+                err.textContent = (result && result.message) || 'Có lỗi xảy ra.';
+                err.style.display = 'block';
+                return;
+            }
+
+            closeModal('modal-score');
+            showToast(resultId ? 'Cập nhật điểm thành công.' : 'Nhập điểm thành công.', 'success');
+
+            // Reload scores
+            const cls = allClasses.find(c => c.id == currentClassId);
+            await loadClassStudentScores(currentClassId, cls ? cls.name : '');
+        });
+
+        async function deleteScore(resultId) {
+            if (!confirm('Xác nhận xóa điểm này?')) return;
+            const ok = await deleteResult(resultId);
+            if (ok) {
+                showToast('Đã xóa điểm.', 'success');
+                const cls = allClasses.find(c => c.id == currentClassId);
+                await loadClassStudentScores(currentClassId, cls ? cls.name : '');
+            } else {
+                showToast('Xóa thất bại.', 'error');
+            }
+        }
+
+        // =========================================================
+        // UTILS
+        // =========================================================
+        function esc(str) {
+            if (!str) return '';
+            return String(str).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
+        }
+
+        function scoreBadge(score) {
+            if (score === null || score === undefined) return '<span class="badge badge-blue">Chưa có</span>';
+            if (score >= 8) return `<span class="badge badge-green">${score}</span>`;
+            if (score >= 5) return `<span class="badge badge-orange">${score}</span>`;
+            return `<span class="badge" style="background:#fce8e6;color:#9b2c1c">${score}</span>`;
+        }
+
+        // === INITIAL LOAD ===
+        loadClasses();
+    </script>
+</body>
+
+</html>
