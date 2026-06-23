@@ -326,7 +326,7 @@
                 const result = cs.result || null; // nếu API trả về result lồng trong cs
                 // Fallback: result nằm trong cs.result
                 const hasScore = result && (result.score !== null && result.score !== undefined);
-                const scoreDisplay = hasScore ? scoreBadge(result.score) : '<span class="badge badge-blue">Chưa có</span>';
+                const scoreDisplay = hasScore ? scoreBadge(result.score) : '<span class="badge badge-blue">Chưa nhập điểm</span>';
                 const comment = (result && result.comment) ? esc(result.comment) : '-';
                 const resultId = result ? result.id : null;
 
@@ -435,7 +435,7 @@
         }
 
         function scoreBadge(score) {
-            if (score === null || score === undefined) return '<span class="badge badge-blue">Chưa có</span>';
+            if (score === null || score === undefined) return '<span class="badge badge-blue">Chưa nhập điểm</span>';
             if (score >= 8) return `<span class="badge badge-green">${score}</span>`;
             if (score >= 5) return `<span class="badge badge-orange">${score}</span>`;
             return `<span class="badge" style="background:#fce8e6;color:#9b2c1c">${score}</span>`;

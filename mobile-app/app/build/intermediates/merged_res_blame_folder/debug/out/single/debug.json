@@ -1,0 +1,18 @@
+[
+    {
+        "merged": "C:\\Users\\ngoch\\.gradle\\daemon\\8.5\\com.language_center.app-merged_res-28:\\layout_activity_teacher.xml.flat",
+        "source": "C:\\Users\\ngoch\\.gradle\\daemon\\8.5\\com.language_center.app-main-30:\\layout\\activity_teacher.xml"
+    },
+    {
+        "merged": "com.language_center.app-merged_res-28:/layout_activity_login.xml.flat",
+        "source": "com.language_center.app-main-30:/layout/activity_login.xml"
+    },
+    {
+        "merged": "C:\\Users\\ngoch\\.gradle\\daemon\\8.5\\com.language_center.app-merged_res-28:\\layout_activity_login.xml.flat",
+        "source": "C:\\Users\\ngoch\\.gradle\\daemon\\8.5\\com.language_center.app-main-30:\\layout\\activity_login.xml"
+    },
+    {
+        "merged": "C:\\Users\\ngoch\\.gradle\\daemon\\8.5\\com.language_center.app-merged_res-28:\\layout_activity_student.xml.flat",
+        "source": "C:\\Users\\ngoch\\.gradle\\daemon\\8.5\\com.language_center.app-main-30:\\layout\\activity_student.xml"
+    }
+]

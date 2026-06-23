@@ -1,6 +1,7 @@
 package com.language_center.service;
 
 import java.util.List;
+import java.util.Comparator;
 
 import org.springframework.stereotype.Service;
 
@@ -77,7 +78,7 @@ public class ResultService {
 
     public List<Result> getAll() {
 
-        return resultRepository.findAll();
+        return sortByStudentCode(resultRepository.findAll());
 
     }
 
@@ -86,13 +87,13 @@ public class ResultService {
     public List<Result> getByStudent(
             Long studentId) {
 
-        return resultRepository.findByClassStudentStudentId(studentId);
+        return sortByStudentCode(resultRepository.findByClassStudentStudentId(studentId));
 
     }
 
     public List<Result> getByStudentUsername(Long studentId) {
 
-        return resultRepository.findByClassStudentStudentId(studentId);
+        return sortByStudentCode(resultRepository.findByClassStudentStudentId(studentId));
 
     }
 
@@ -188,13 +189,31 @@ public class ResultService {
 
     public List<Result> getByClassroom(Long classroomId) {
 
-        return resultRepository.findByClassStudentClassroomId(classroomId);
+        return sortByStudentCode(resultRepository.findByClassStudentClassroomId(classroomId));
 
     }
 
     public List<Result> getByClassroomForTeacher(Long teacherId, Long classroomId) {
 
-        return resultRepository.findByClassStudentClassroomTeacherIdAndClassStudentClassroomId(teacherId, classroomId);
+        return sortByStudentCode(
+                resultRepository.findByClassStudentClassroomTeacherIdAndClassStudentClassroomId(teacherId,
+                        classroomId));
+
+    }
+
+    private List<Result> sortByStudentCode(List<Result> list) {
+
+        return list.stream()
+                .sorted(Comparator.comparing(
+                        result -> {
+                            if (result == null || result.getClassStudent() == null
+                                    || result.getClassStudent().getStudent() == null) {
+                                return null;
+                            }
+                            return result.getClassStudent().getStudent().getStudentId();
+                        },
+                        Comparator.nullsLast(String.CASE_INSENSITIVE_ORDER)))
+                .toList();
 
     }
 

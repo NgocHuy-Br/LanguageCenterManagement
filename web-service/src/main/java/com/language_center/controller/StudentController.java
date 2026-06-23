@@ -3,8 +3,6 @@ package com.language_center.controller;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
-
 import com.language_center.dto.ApiResponse;
 import com.language_center.entity.Student;
 import com.language_center.service.StudentService;
@@ -101,7 +99,15 @@ public class StudentController {
         public ResponseEntity<?> delete(
                         @PathVariable Long id) {
 
-                boolean result = service.delete(id);
+                boolean result;
+
+                try {
+                        result = service.delete(id);
+                } catch (IllegalStateException ex) {
+                        return ResponseEntity
+                                        .status(409)
+                                        .body(new ApiResponse<>(409, ex.getMessage(), null));
+                }
 
                 if (!result) {
 

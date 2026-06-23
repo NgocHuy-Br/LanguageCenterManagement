@@ -9,4 +9,8 @@ public interface ClassStudentRepository
 
         java.util.List<ClassStudent> findByClassroomId(Long classroomId);
 
+        boolean existsByStudentId(Long studentId);
+
+        boolean existsByClassroomId(Long classroomId);
+
 }

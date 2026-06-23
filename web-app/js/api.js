@@ -118,8 +118,10 @@ async function updateStudent(id, student) {
 
 async function deleteStudent(id) {
     const res = await apiFetch('DELETE', '/api/admin/students/' + id);
-    if (!res) return false;
-    return res.ok;
+    if (!res) return { ok: false, status: 0, message: 'Mất kết nối máy chủ.' };
+    let data = null;
+    try { data = await res.json(); } catch (_) { }
+    return { ok: res.ok, status: res.status, message: data && data.message ? data.message : '' };
 }
 
 // ===== TEACHER API =====
@@ -147,8 +149,10 @@ async function updateTeacher(id, teacher) {
 
 async function deleteTeacher(id) {
     const res = await apiFetch('DELETE', '/api/admin/teachers/' + id);
-    if (!res) return false;
-    return res.ok;
+    if (!res) return { ok: false, status: 0, message: 'Mất kết nối máy chủ.' };
+    let data = null;
+    try { data = await res.json(); } catch (_) { }
+    return { ok: res.ok, status: res.status, message: data && data.message ? data.message : '' };
 }
 
 // ===== CLASSROOM API =====
@@ -178,8 +182,10 @@ async function updateClassroom(id, classroom, teacherId) {
 
 async function deleteClassroom(id) {
     const res = await apiFetch('DELETE', '/api/admin/classes/' + id);
-    if (!res) return false;
-    return res.ok;
+    if (!res) return { ok: false, status: 0, message: 'Mất kết nối máy chủ.' };
+    let data = null;
+    try { data = await res.json(); } catch (_) { }
+    return { ok: res.ok, status: res.status, message: data && data.message ? data.message : '' };
 }
 
 // ===== CLASS-STUDENT API =====

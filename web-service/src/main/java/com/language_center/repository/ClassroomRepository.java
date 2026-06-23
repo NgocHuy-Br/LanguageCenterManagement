@@ -9,6 +9,8 @@ public interface ClassroomRepository
 
     java.util.List<Classroom> findByTeacherId(Long teacherId);
 
+    boolean existsByTeacherId(Long teacherId);
+
     boolean existsByIdAndTeacherId(Long id, Long teacherId);
 
 }

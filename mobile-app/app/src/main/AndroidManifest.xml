@@ -1,23 +1,17 @@
 <?xml version="1.0" encoding="utf-8"?>
-<manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools">
+<manifest xmlns:android="http://schemas.android.com/apk/res/android">
 
     <uses-permission android:name="android.permission.INTERNET" />
 
     <application
         android:allowBackup="true"
-        android:dataExtractionRules="@xml/data_extraction_rules"
-        android:fullBackupContent="@xml/backup_rules"
-        android:icon="@mipmap/ic_launcher"
         android:label="Language Center"
-        android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
-        android:theme="@style/Theme.AppCompat.Light.NoActionBar"
-        android:usesCleartextTraffic="true"
-        tools:targetApi="31">
+        android:theme="@style/Theme.LanguageCenter"
+        android:usesCleartextTraffic="true">
 
         <activity
-            android:name=".LoginActivity"
+            android:name="com.language_center.LoginActivity"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -25,8 +19,8 @@
             </intent-filter>
         </activity>
 
-        <activity android:name=".TeacherActivity" />
-        <activity android:name=".StudentActivity" />
+        <activity android:name="com.language_center.TeacherActivity" />
+        <activity android:name="com.language_center.StudentActivity" />
 
     </application>
 

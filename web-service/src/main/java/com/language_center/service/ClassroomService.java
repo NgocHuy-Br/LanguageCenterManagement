@@ -1,6 +1,7 @@
 package com.language_center.service;
 
 import java.util.List;
+import java.util.Comparator;
 
 import org.springframework.stereotype.Service;
 
@@ -9,6 +10,7 @@ import com.language_center.entity.Teacher;
 
 import com.language_center.repository.ClassroomRepository;
 import com.language_center.repository.TeacherRepository;
+import com.language_center.repository.ClassStudentRepository;
 
 @Service
 public class ClassroomService {
@@ -17,13 +19,18 @@ public class ClassroomService {
 
     private final TeacherRepository teacherRepository;
 
+    private final ClassStudentRepository classStudentRepository;
+
     public ClassroomService(
             ClassroomRepository classroomRepository,
-            TeacherRepository teacherRepository) {
+            TeacherRepository teacherRepository,
+            ClassStudentRepository classStudentRepository) {
 
         this.classroomRepository = classroomRepository;
 
         this.teacherRepository = teacherRepository;
+
+        this.classStudentRepository = classStudentRepository;
 
     }
 
@@ -31,13 +38,21 @@ public class ClassroomService {
 
     public List<Classroom> getAll() {
 
-        return classroomRepository.findAll();
+        return classroomRepository.findAll().stream()
+                .sorted(Comparator.comparing(
+                        Classroom::getName,
+                        Comparator.nullsLast(String.CASE_INSENSITIVE_ORDER)))
+                .toList();
 
     }
 
     public List<Classroom> getByTeacherId(Long teacherId) {
 
-        return classroomRepository.findByTeacherId(teacherId);
+        return classroomRepository.findByTeacherId(teacherId).stream()
+                .sorted(Comparator.comparing(
+                        Classroom::getName,
+                        Comparator.nullsLast(String.CASE_INSENSITIVE_ORDER)))
+                .toList();
 
     }
 
@@ -111,10 +126,20 @@ public class ClassroomService {
 
     public boolean delete(Long id) {
 
-        if (!classroomRepository.existsById(id)) {
+        Classroom classroom = classroomRepository.findById(id).orElse(null);
+
+        if (classroom == null) {
 
             return false;
 
+        }
+
+        if (classroom.getTeacher() != null) {
+            throw new IllegalStateException("Không thể xóa lớp đã được gán giáo viên.");
+        }
+
+        if (classStudentRepository.existsByClassroomId(id)) {
+            throw new IllegalStateException("Không thể xóa lớp đã có học viên.");
         }
 
         classroomRepository.deleteById(id);

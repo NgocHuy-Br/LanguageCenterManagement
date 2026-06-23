@@ -1,27 +1,32 @@
 package com.language_center.service;
 
 import java.util.List;
+import java.util.Comparator;
 
 import org.springframework.stereotype.Service;
 
 import com.language_center.entity.Teacher;
 import com.language_center.repository.StudentRepository;
 import com.language_center.repository.TeacherRepository;
+import com.language_center.repository.ClassroomRepository;
 
 @Service
 public class TeacherService {
 
     private final TeacherRepository teacherRepository;
     private final StudentRepository studentRepository;
+    private final ClassroomRepository classroomRepository;
     private final UserService userService;
 
     public TeacherService(
             TeacherRepository teacherRepository,
             StudentRepository studentRepository,
+            ClassroomRepository classroomRepository,
             UserService userService) {
 
         this.teacherRepository = teacherRepository;
         this.studentRepository = studentRepository;
+        this.classroomRepository = classroomRepository;
         this.userService = userService;
 
     }
@@ -29,7 +34,11 @@ public class TeacherService {
     // lấy tất cả giáo viên
     public List<Teacher> getAll() {
 
-        return teacherRepository.findAll();
+        return teacherRepository.findAll().stream()
+                .sorted(Comparator.comparing(
+                        Teacher::getTeacherId,
+                        Comparator.nullsLast(String.CASE_INSENSITIVE_ORDER)))
+                .toList();
 
     }
 
@@ -99,6 +108,10 @@ public class TeacherService {
 
         }
 
+        if (classroomRepository.existsByTeacherId(id)) {
+            throw new IllegalStateException("Không thể xóa giáo viên đã được phân công lớp.");
+        }
+
         userService.deleteTeacherUser(id);
 
         teacherRepository.deleteById(id);
@@ -108,6 +121,10 @@ public class TeacherService {
     }
 
     private void validateTeacherForCreate(Teacher teacher) {
+
+        if (teacher == null) {
+            throw new IllegalArgumentException("Dữ liệu giáo viên không hợp lệ.");
+        }
 
         String teacherId = normalizeId(teacher == null ? null : teacher.getTeacherId());
 

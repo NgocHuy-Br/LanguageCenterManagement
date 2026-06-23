@@ -34,6 +34,13 @@ public class LoginActivity extends AppCompatActivity {
         edtPass = findViewById(R.id.edtPassword);
         btnLogin = findViewById(R.id.btnLogin);
 
+        // Kiểm tra nếu đã đăng nhập trước đó
+        SharedPreferences pref = getSharedPreferences("AUTH", MODE_PRIVATE);
+        String savedRole = pref.getString("role", "");
+        if (!savedRole.isEmpty()) {
+            redirectByRole(savedRole);
+        }
+
         btnLogin.setOnClickListener(v -> {
             String user = edtUser.getText().toString().trim();
             String pass = edtPass.getText().toString().trim();
@@ -61,7 +68,7 @@ public class LoginActivity extends AppCompatActivity {
                         String responseData = response.body().string();
                         JSONObject json = new JSONObject(responseData);
                         JSONObject data = json.getJSONObject("data");
-                        String role = data.getString("role");
+                        String role = data.optString("role", "");
 
                         SharedPreferences pref = getSharedPreferences("AUTH", MODE_PRIVATE);
                         SharedPreferences.Editor editor = pref.edit();
@@ -69,34 +76,63 @@ public class LoginActivity extends AppCompatActivity {
                         editor.putString("role", role);
                         editor.putString("username", user);
 
+                        editor.putLong("teacherId", data.optLong("teacherId", -1));
+                        editor.putLong("studentId", data.optLong("studentId", -1));
+
+                        JSONObject teacher = data.optJSONObject("teacher");
+                        if (teacher != null) {
+                            editor.putString("teacher_teacherId", teacher.optString("teacherId", ""));
+                            editor.putString("teacher_name", teacher.optString("name", ""));
+                            editor.putString("teacher_birthDate", teacher.optString("birthDate", ""));
+                            editor.putString("teacher_address", teacher.optString("address", ""));
+                            editor.putString("teacher_phone", teacher.optString("phone", ""));
+                            editor.putString("teacher_email", teacher.optString("email", ""));
+                        }
+
+                        JSONObject student = data.optJSONObject("student");
+                        if (student != null) {
+                            editor.putString("student_studentId", student.optString("studentId", ""));
+                            editor.putString("student_name", student.optString("name", ""));
+                            editor.putString("student_birthDate", student.optString("birthDate", ""));
+                            editor.putString("student_address", student.optString("address", ""));
+                            editor.putString("student_phone", student.optString("phone", ""));
+                            editor.putString("student_email", student.optString("email", ""));
+                        }
+                        editor.apply();
+
                         runOnUiThread(() -> {
-                            if (role.equals("TEACHER")) {
-                                editor.apply();
-                                startActivity(new Intent(LoginActivity.this, TeacherActivity.class));
-                                finish();
-                            } else if (role.equals("STUDENT")) {
-                                try {
-                                    editor.putLong("studentId", data.getLong("studentId"));
-                                } catch (Exception e) {}
-                                editor.apply();
-                                startActivity(new Intent(LoginActivity.this, StudentActivity.class));
-                                finish();
+                            if (role.equals("TEACHER") || role.equals("STUDENT")) {
+                                redirectByRole(role);
                             } else {
-                                Toast.makeText(LoginActivity.this, "Ứng dụng không hỗ trợ Admin!", Toast.LENGTH_SHORT).show();
+                                Toast.makeText(LoginActivity.this, "Quyền Admin không hỗ trợ trên Mobile!",
+                                        Toast.LENGTH_SHORT).show();
                             }
                         });
                     } catch (Exception e) {
                         e.printStackTrace();
                     }
                 } else {
-                    runOnUiThread(() -> Toast.makeText(LoginActivity.this, "Sai tài khoản hoặc mật khẩu!", Toast.LENGTH_SHORT).show());
+                    runOnUiThread(() -> Toast
+                            .makeText(LoginActivity.this, "Tài khoản hoặc mật khẩu không đúng!", Toast.LENGTH_SHORT)
+                            .show());
                 }
             }
 
             @Override
             public void onFailure(Call call, IOException e) {
-                runOnUiThread(() -> Toast.makeText(LoginActivity.this, "Lỗi kết nối Server!", Toast.LENGTH_SHORT).show());
+                runOnUiThread(() -> Toast
+                        .makeText(LoginActivity.this, "Lỗi kết nối server (10.0.2.2)!", Toast.LENGTH_SHORT).show());
             }
         });
+    }
+
+    private void redirectByRole(String role) {
+        if (role.equals("TEACHER")) {
+            startActivity(new Intent(this, TeacherActivity.class));
+            finish();
+        } else if (role.equals("STUDENT")) {
+            startActivity(new Intent(this, StudentActivity.class));
+            finish();
+        }
     }
 }

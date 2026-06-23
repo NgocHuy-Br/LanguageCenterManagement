@@ -1,6 +1,7 @@
 package com.language_center.service;
 
 import java.util.List;
+import java.util.Comparator;
 
 import org.springframework.stereotype.Service;
 
@@ -66,7 +67,12 @@ public class ClassStudentService {
 
     public List<ClassStudent> getAll() {
 
-        return classStudentRepository.findAll();
+        return classStudentRepository.findAll().stream()
+                .sorted(Comparator.comparing(
+                        classStudent -> classStudent.getStudent() == null ? null
+                                : classStudent.getStudent().getStudentId(),
+                        Comparator.nullsLast(String.CASE_INSENSITIVE_ORDER)))
+                .toList();
 
     }
 
@@ -74,7 +80,12 @@ public class ClassStudentService {
 
     public List<ClassStudent> getByClassroomId(Long classroomId) {
 
-        return classStudentRepository.findByClassroomId(classroomId);
+        return classStudentRepository.findByClassroomId(classroomId).stream()
+                .sorted(Comparator.comparing(
+                        classStudent -> classStudent.getStudent() == null ? null
+                                : classStudent.getStudent().getStudentId(),
+                        Comparator.nullsLast(String.CASE_INSENSITIVE_ORDER)))
+                .toList();
 
     }
 

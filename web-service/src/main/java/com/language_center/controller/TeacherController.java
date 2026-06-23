@@ -95,7 +95,15 @@ public class TeacherController {
         public ResponseEntity<?> delete(
                         @PathVariable Long id) {
 
-                boolean result = teacherService.delete(id);
+                boolean result;
+
+                try {
+                        result = teacherService.delete(id);
+                } catch (IllegalStateException ex) {
+                        return ResponseEntity
+                                        .status(409)
+                                        .body(new ApiResponse<>(409, ex.getMessage(), null));
+                }
 
                 if (!result) {
 

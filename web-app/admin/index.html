@@ -458,9 +458,9 @@
 
         window.deleteStudentById = async function (id, name) {
             if (!confirm('Xác nhận xóa học viên "' + name + '"?')) return;
-            const ok = await deleteStudent(id);
-            if (!ok) {
-                showToast('Xóa thất bại. Học viên có thể đang ở trong lớp.', 'error');
+            const result = await deleteStudent(id);
+            if (!result || !result.ok) {
+                showToast((result && result.message) || 'Xóa thất bại.', 'error');
                 return;
             }
             showToast('Đã xóa học viên.', 'success');
@@ -557,9 +557,9 @@
 
         window.deleteTeacherById = async function (id, name) {
             if (!confirm('Xác nhận xóa giáo viên "' + name + '"?')) return;
-            const ok = await deleteTeacher(id);
-            if (!ok) {
-                showToast('Xóa thất bại. Giáo viên có thể đang phụ trách lớp.', 'error');
+            const result = await deleteTeacher(id);
+            if (!result || !result.ok) {
+                showToast((result && result.message) || 'Xóa thất bại.', 'error');
                 return;
             }
             showToast('Đã xóa giáo viên.', 'success');
@@ -643,9 +643,9 @@
 
         window.deleteClassById = async function (id, name) {
             if (!confirm('Xác nhận xóa lớp "' + name + '"?')) return;
-            const ok = await deleteClassroom(id);
-            if (!ok) {
-                showToast('Xóa lớp thất bại.', 'error');
+            const result = await deleteClassroom(id);
+            if (!result || !result.ok) {
+                showToast((result && result.message) || 'Xóa lớp thất bại.', 'error');
                 return;
             }
             showToast('Đã xóa lớp học.', 'success');

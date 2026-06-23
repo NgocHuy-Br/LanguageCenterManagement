@@ -1,6 +1,7 @@
 package com.language_center.service;
 
 import java.util.List;
+import java.util.Comparator;
 
 import org.springframework.stereotype.Service;
 
@@ -8,28 +9,36 @@ import com.language_center.entity.Student;
 import com.language_center.entity.Teacher;
 import com.language_center.repository.StudentRepository;
 import com.language_center.repository.TeacherRepository;
+import com.language_center.repository.ClassStudentRepository;
 
 @Service
 public class StudentService {
 
     private final StudentRepository repository;
     private final TeacherRepository teacherRepository;
+    private final ClassStudentRepository classStudentRepository;
     private final UserService userService;
 
     public StudentService(
             StudentRepository repository,
             TeacherRepository teacherRepository,
+            ClassStudentRepository classStudentRepository,
             UserService userService) {
 
         this.repository = repository;
         this.teacherRepository = teacherRepository;
+        this.classStudentRepository = classStudentRepository;
         this.userService = userService;
 
     }
 
     public List<Student> getAll() {
 
-        return repository.findAll();
+        return repository.findAll().stream()
+                .sorted(Comparator.comparing(
+                        Student::getStudentId,
+                        Comparator.nullsLast(String.CASE_INSENSITIVE_ORDER)))
+                .toList();
 
     }
 
@@ -94,6 +103,10 @@ public class StudentService {
 
         }
 
+        if (classStudentRepository.existsByStudentId(id)) {
+            throw new IllegalStateException("Không thể xóa học viên đã được gán lớp.");
+        }
+
         userService.deleteStudentUser(id);
 
         repository.deleteById(id);
@@ -103,6 +116,10 @@ public class StudentService {
     }
 
     private void validateStudentForCreate(Student student) {
+
+        if (student == null) {
+            throw new IllegalArgumentException("Dữ liệu học viên không hợp lệ.");
+        }
 
         String studentId = normalizeId(student == null ? null : student.getStudentId());
 

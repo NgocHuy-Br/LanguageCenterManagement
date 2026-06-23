@@ -1,0 +1,90 @@
+1<?xml version="1.0" encoding="utf-8"?>
+2<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+3    package="com.language_center"
+4    android:versionCode="1"
+5    android:versionName="1.0" >
+6
+7    <uses-sdk
+8        android:minSdkVersion="24"
+9        android:targetSdkVersion="34" />
+10
+11    <uses-permission android:name="android.permission.INTERNET" />
+11-->D:\3. PTIT\06. HK 5\6. Phat trien phan mem huong dich vu\Do an\LanguageCenterManagement\mobile-app\app\src\main\AndroidManifest.xml:4:5-67
+11-->D:\3. PTIT\06. HK 5\6. Phat trien phan mem huong dich vu\Do an\LanguageCenterManagement\mobile-app\app\src\main\AndroidManifest.xml:4:22-64
+12
+13    <permission
+13-->[androidx.core:core:1.9.0] C:\Users\ngoch\.gradle\caches\transforms-3\5d4bfdd9a03f397dd627483301e179a1\transformed\core-1.9.0\AndroidManifest.xml:22:5-24:47
+14        android:name="com.language_center.DYNAMIC_RECEIVER_NOT_EXPORTED_PERMISSION"
+14-->[androidx.core:core:1.9.0] C:\Users\ngoch\.gradle\caches\transforms-3\5d4bfdd9a03f397dd627483301e179a1\transformed\core-1.9.0\AndroidManifest.xml:23:9-81
+15        android:protectionLevel="signature" />
+15-->[androidx.core:core:1.9.0] C:\Users\ngoch\.gradle\caches\transforms-3\5d4bfdd9a03f397dd627483301e179a1\transformed\core-1.9.0\AndroidManifest.xml:24:9-44
+16
+17    <uses-permission android:name="com.language_center.DYNAMIC_RECEIVER_NOT_EXPORTED_PERMISSION" />
+17-->[androidx.core:core:1.9.0] C:\Users\ngoch\.gradle\caches\transforms-3\5d4bfdd9a03f397dd627483301e179a1\transformed\core-1.9.0\AndroidManifest.xml:26:5-97
+17-->[androidx.core:core:1.9.0] C:\Users\ngoch\.gradle\caches\transforms-3\5d4bfdd9a03f397dd627483301e179a1\transformed\core-1.9.0\AndroidManifest.xml:26:22-94
+18
+19    <application
+19-->D:\3. PTIT\06. HK 5\6. Phat trien phan mem huong dich vu\Do an\LanguageCenterManagement\mobile-app\app\src\main\AndroidManifest.xml:6:5-25:19
+20        android:allowBackup="true"
+20-->D:\3. PTIT\06. HK 5\6. Phat trien phan mem huong dich vu\Do an\LanguageCenterManagement\mobile-app\app\src\main\AndroidManifest.xml:7:9-35
+21        android:appComponentFactory="androidx.core.app.CoreComponentFactory"
+21-->[androidx.core:core:1.9.0] C:\Users\ngoch\.gradle\caches\transforms-3\5d4bfdd9a03f397dd627483301e179a1\transformed\core-1.9.0\AndroidManifest.xml:28:18-86
+22        android:debuggable="true"
+23        android:extractNativeLibs="false"
+24        android:label="Language Center"
+24-->D:\3. PTIT\06. HK 5\6. Phat trien phan mem huong dich vu\Do an\LanguageCenterManagement\mobile-app\app\src\main\AndroidManifest.xml:8:9-40
+25        android:supportsRtl="true"
+25-->D:\3. PTIT\06. HK 5\6. Phat trien phan mem huong dich vu\Do an\LanguageCenterManagement\mobile-app\app\src\main\AndroidManifest.xml:9:9-35
+26        android:testOnly="true"
+27        android:theme="@style/Theme.LanguageCenter"
+27-->D:\3. PTIT\06. HK 5\6. Phat trien phan mem huong dich vu\Do an\LanguageCenterManagement\mobile-app\app\src\main\AndroidManifest.xml:10:9-52
+28        android:usesCleartextTraffic="true" >
+28-->D:\3. PTIT\06. HK 5\6. Phat trien phan mem huong dich vu\Do an\LanguageCenterManagement\mobile-app\app\src\main\AndroidManifest.xml:11:9-44
+29        <activity
+29-->D:\3. PTIT\06. HK 5\6. Phat trien phan mem huong dich vu\Do an\LanguageCenterManagement\mobile-app\app\src\main\AndroidManifest.xml:13:9-20:20
+30            android:name="com.language_center.LoginActivity"
+30-->D:\3. PTIT\06. HK 5\6. Phat trien phan mem huong dich vu\Do an\LanguageCenterManagement\mobile-app\app\src\main\AndroidManifest.xml:14:13-61
+31            android:exported="true" >
+31-->D:\3. PTIT\06. HK 5\6. Phat trien phan mem huong dich vu\Do an\LanguageCenterManagement\mobile-app\app\src\main\AndroidManifest.xml:15:13-36
+32            <intent-filter>
+32-->D:\3. PTIT\06. HK 5\6. Phat trien phan mem huong dich vu\Do an\LanguageCenterManagement\mobile-app\app\src\main\AndroidManifest.xml:16:13-19:29
+33                <action android:name="android.intent.action.MAIN" />
+33-->D:\3. PTIT\06. HK 5\6. Phat trien phan mem huong dich vu\Do an\LanguageCenterManagement\mobile-app\app\src\main\AndroidManifest.xml:17:17-69
+33-->D:\3. PTIT\06. HK 5\6. Phat trien phan mem huong dich vu\Do an\LanguageCenterManagement\mobile-app\app\src\main\AndroidManifest.xml:17:25-66
+34
+35                <category android:name="android.intent.category.LAUNCHER" />
+35-->D:\3. PTIT\06. HK 5\6. Phat trien phan mem huong dich vu\Do an\LanguageCenterManagement\mobile-app\app\src\main\AndroidManifest.xml:18:17-77
+35-->D:\3. PTIT\06. HK 5\6. Phat trien phan mem huong dich vu\Do an\LanguageCenterManagement\mobile-app\app\src\main\AndroidManifest.xml:18:27-74
+36            </intent-filter>
+37        </activity>
+38        <activity android:name="com.language_center.TeacherActivity" />
+38-->D:\3. PTIT\06. HK 5\6. Phat trien phan mem huong dich vu\Do an\LanguageCenterManagement\mobile-app\app\src\main\AndroidManifest.xml:22:9-72
+38-->D:\3. PTIT\06. HK 5\6. Phat trien phan mem huong dich vu\Do an\LanguageCenterManagement\mobile-app\app\src\main\AndroidManifest.xml:22:19-69
+39        <activity android:name="com.language_center.StudentActivity" />
+39-->D:\3. PTIT\06. HK 5\6. Phat trien phan mem huong dich vu\Do an\LanguageCenterManagement\mobile-app\app\src\main\AndroidManifest.xml:23:9-72
+39-->D:\3. PTIT\06. HK 5\6. Phat trien phan mem huong dich vu\Do an\LanguageCenterManagement\mobile-app\app\src\main\AndroidManifest.xml:23:19-69
+40
+41        <provider
+41-->[androidx.emoji2:emoji2:1.2.0] C:\Users\ngoch\.gradle\caches\transforms-3\56421441767febfd92a36dc17f884646\transformed\emoji2-1.2.0\AndroidManifest.xml:24:9-32:20
+42            android:name="androidx.startup.InitializationProvider"
+42-->[androidx.emoji2:emoji2:1.2.0] C:\Users\ngoch\.gradle\caches\transforms-3\56421441767febfd92a36dc17f884646\transformed\emoji2-1.2.0\AndroidManifest.xml:25:13-67
+43            android:authorities="com.language_center.androidx-startup"
+43-->[androidx.emoji2:emoji2:1.2.0] C:\Users\ngoch\.gradle\caches\transforms-3\56421441767febfd92a36dc17f884646\transformed\emoji2-1.2.0\AndroidManifest.xml:26:13-68
+44            android:exported="false" >
+44-->[androidx.emoji2:emoji2:1.2.0] C:\Users\ngoch\.gradle\caches\transforms-3\56421441767febfd92a36dc17f884646\transformed\emoji2-1.2.0\AndroidManifest.xml:27:13-37
+45            <meta-data
+45-->[androidx.emoji2:emoji2:1.2.0] C:\Users\ngoch\.gradle\caches\transforms-3\56421441767febfd92a36dc17f884646\transformed\emoji2-1.2.0\AndroidManifest.xml:29:13-31:52
+46                android:name="androidx.emoji2.text.EmojiCompatInitializer"
+46-->[androidx.emoji2:emoji2:1.2.0] C:\Users\ngoch\.gradle\caches\transforms-3\56421441767febfd92a36dc17f884646\transformed\emoji2-1.2.0\AndroidManifest.xml:30:17-75
+47                android:value="androidx.startup" />
+47-->[androidx.emoji2:emoji2:1.2.0] C:\Users\ngoch\.gradle\caches\transforms-3\56421441767febfd92a36dc17f884646\transformed\emoji2-1.2.0\AndroidManifest.xml:31:17-49
+48            <meta-data
+48-->[androidx.lifecycle:lifecycle-process:2.4.1] C:\Users\ngoch\.gradle\caches\transforms-3\8978d635966a912ffd46a4813c42ceae\transformed\lifecycle-process-2.4.1\AndroidManifest.xml:31:13-33:52
+49                android:name="androidx.lifecycle.ProcessLifecycleInitializer"
+49-->[androidx.lifecycle:lifecycle-process:2.4.1] C:\Users\ngoch\.gradle\caches\transforms-3\8978d635966a912ffd46a4813c42ceae\transformed\lifecycle-process-2.4.1\AndroidManifest.xml:32:17-78
+50                android:value="androidx.startup" />
+50-->[androidx.lifecycle:lifecycle-process:2.4.1] C:\Users\ngoch\.gradle\caches\transforms-3\8978d635966a912ffd46a4813c42ceae\transformed\lifecycle-process-2.4.1\AndroidManifest.xml:33:17-49
+51        </provider>
+52    </application>
+53
+54</manifest>
